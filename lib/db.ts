@@ -245,6 +245,7 @@ CREATE TABLE IF NOT EXISTS webhook_tokens (
 `;
 
 let initialized = false;
+let initPromise: Promise<void> | null = null;
 
 function isDuplicateColumnError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
@@ -511,6 +512,14 @@ export async function initializeDatabase(): Promise<void> {
 
   if (initialized) return;
 
+  // Promise 单例锁：防止并发初始化导致主键冲突
+  if (initPromise) return initPromise;
+  initPromise = doInitializeDatabase(db);
+  return initPromise;
+}
+
+async function doInitializeDatabase(db: ReturnType<typeof getAdapter>): Promise<void> {
+
   const statements = CREATE_TABLES_SQL.split(';').filter((s) => s.trim());
 
   for (const statement of statements) {
@@ -532,19 +541,17 @@ export async function initializeDatabase(): Promise<void> {
     }
   }
 
-  // 初始化系统配置（如果不存在）
-  const [configRows] = await db.execute('SELECT id FROM system_config WHERE id = 1');
-  if ((configRows as unknown[]).length === 0) {
-    await db.execute(`
-      INSERT INTO system_config (id, sora_api_key, sora_base_url, gemini_api_key, gemini_base_url)
-      VALUES (1, ?, ?, ?, ?)
-    `, [
-      process.env.SORA_API_KEY || '',
-      process.env.SORA_BASE_URL || 'http://localhost:8000',
-      process.env.GEMINI_API_KEY || '',
-      process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com',
-    ]);
-  }
+  // 初始化系统配置（INSERT IGNORE 防止并发竞态冲突）
+  const insertIgnore = dbType === 'mysql' ? 'INSERT IGNORE INTO' : 'INSERT OR IGNORE INTO';
+  await db.execute(`
+    ${insertIgnore} system_config (id, sora_api_key, sora_base_url, gemini_api_key, gemini_base_url)
+    VALUES (1, ?, ?, ?, ?)
+  `, [
+    process.env.SORA_API_KEY || '',
+    process.env.SORA_BASE_URL || 'http://localhost:8000',
+    process.env.GEMINI_API_KEY || '',
+    process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com',
+  ]);
 
   // 初始化管理员账号
   await initializeAdmin();
@@ -2357,6 +2364,7 @@ export async function updateSystemConfig(
 
 async function initializeAdmin(): Promise<void> {
   const db = getAdapter();
+  const dbType = process.env.DB_TYPE || 'sqlite';
   const adminEmail = process.env.ADMIN_EMAIL || 'admin@sanhub.local';
   const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
@@ -2368,9 +2376,10 @@ async function initializeAdmin(): Promise<void> {
   if ((existing as unknown[]).length === 0) {
     const hashedPassword = await bcrypt.hash(adminPassword, 10);
     const now = Date.now();
+    const insertIgnore = dbType === 'mysql' ? 'INSERT IGNORE INTO' : 'INSERT OR IGNORE INTO';
 
     await db.execute(
-      `INSERT INTO users (id, email, password, name, role, balance, created_at, updated_at)
+      `${insertIgnore} users (id, email, password, name, role, balance, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [generateId(), adminEmail, hashedPassword, 'Admin', 'admin', 999999, now, now]
     );
