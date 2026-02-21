@@ -1,0 +1,193 @@
+{
+  "timestamp": "2026-02-20T14:20:00+08:00",
+  "version": "2.0.0",
+  "project": "SanHub",
+  "framework": "Next.js 14 (App Router)",
+  "language": "TypeScript",
+  "coverage": {
+    "estimatedTotalFiles": 205,
+    "scannedFiles": 185,
+    "coveragePercent": 90,
+    "note": "Excludes node_modules, .next, data/media, binary files"
+  },
+  "modules": {
+    "root": {
+      "claudeMd": "CLAUDE.md",
+      "entry": "app/layout.tsx",
+      "middleware": "middleware.ts"
+    },
+    "lib": {
+      "claudeMd": "lib/CLAUDE.md",
+      "entry": "lib/db.ts",
+      "fileCount": 62,
+      "keyFiles": [
+        "lib/db.ts",
+        "lib/db-adapter.ts",
+        "lib/db-connection.ts",
+        "lib/db-comic.ts",
+        "lib/db-agent.ts",
+        "lib/db-llm.ts",
+        "lib/db-codes.ts",
+        "lib/auth.ts",
+        "lib/image-generator.ts",
+        "lib/video-generator.ts",
+        "lib/llm-client.ts",
+        "lib/sora-api.ts",
+        "lib/kie-api.ts",
+        "lib/suchuang-api.ts",
+        "lib/jimeng-api.ts",
+        "lib/gemini-agent.ts",
+        "lib/ai-storyboard-service.ts",
+        "lib/asset-analyzer.ts",
+        "lib/feature-binding.ts",
+        "lib/prompt-service.ts",
+        "lib/agent-utils.ts",
+        "lib/schema-registry.ts",
+        "lib/task-scheduler.ts",
+        "lib/api-handler.ts",
+        "lib/api-endpoints.ts",
+        "lib/api-error.ts",
+        "lib/cache.ts",
+        "lib/http-retry.ts",
+        "lib/backend-poller.ts",
+        "lib/email.ts",
+        "lib/media-storage.ts",
+        "lib/page-registry.ts",
+        "lib/stores/workspace-store.ts"
+      ],
+      "tests": null,
+      "gaps": ["No test files"]
+    },
+    "components/ui": {
+      "claudeMd": "components/ui/CLAUDE.md",
+      "entry": "components/ui/button.tsx",
+      "fileCount": 22,
+      "tests": null
+    },
+    "components/episodes": {
+      "claudeMd": "components/episodes/CLAUDE.md",
+      "entry": "components/episodes/dynamic-workspace.tsx",
+      "fileCount": 20,
+      "tests": null
+    },
+    "components/assets": {
+      "claudeMd": "components/assets/CLAUDE.md",
+      "entry": "components/assets/asset-workspace.tsx",
+      "fileCount": 20,
+      "tests": null,
+      "newInVersion": "2.0.0"
+    },
+    "components/projects": {
+      "claudeMd": "components/projects/CLAUDE.md",
+      "entry": "components/projects/project-list.tsx",
+      "fileCount": 10,
+      "tests": null
+    },
+    "components/admin": {
+      "claudeMd": "components/admin/CLAUDE.md",
+      "entry": "components/admin/sidebar.tsx",
+      "fileCount": 19,
+      "tests": null
+    },
+    "components/generator": {
+      "claudeMd": "components/generator/CLAUDE.md",
+      "entry": "components/generator/sora-panel.tsx",
+      "fileCount": 3,
+      "tests": null,
+      "newInVersion": "2.0.0"
+    },
+    "components/workspace": {
+      "claudeMd": "components/workspace/CLAUDE.md",
+      "entry": "components/workspace/workspace-center-panel.tsx",
+      "fileCount": 3,
+      "tests": null,
+      "newInVersion": "2.0.0"
+    },
+    "components/workflow": {
+      "claudeMd": "components/workflow/CLAUDE.md",
+      "entry": "components/workflow/workflow-shell.tsx",
+      "fileCount": 2,
+      "tests": null,
+      "newInVersion": "2.0.0"
+    },
+    "components/layout": {
+      "claudeMd": "components/layout/CLAUDE.md",
+      "entry": "components/layout/dashboard-shell.tsx",
+      "fileCount": 3,
+      "tests": null,
+      "newInVersion": "2.0.0"
+    },
+    "components/providers": {
+      "claudeMd": null,
+      "entry": "components/providers.tsx",
+      "fileCount": 3,
+      "tests": null,
+      "note": "Small module: providers.tsx + providers/debug-provider.tsx + providers/site-config-provider.tsx"
+    },
+    "app/api/generate": {
+      "claudeMd": "app/api/generate/CLAUDE.md",
+      "entry": "app/api/generate/image/route.ts",
+      "fileCount": 8,
+      "tests": null
+    },
+    "app/admin": {
+      "claudeMd": null,
+      "entry": "app/admin/layout.tsx",
+      "fileCount": 26,
+      "tests": null,
+      "note": "26 admin pages covering all management functions"
+    },
+    "types": {
+      "claudeMd": null,
+      "entry": "types/index.ts",
+      "fileCount": 2,
+      "tests": null
+    }
+  },
+  "ignoredPaths": [
+    "node_modules/**",
+    ".next/**",
+    "data/media/**",
+    "data/*.db",
+    "data/*.db-wal",
+    "data/*.db-shm",
+    "img/**",
+    "public/**",
+    "*.zip",
+    "*.log"
+  ],
+  "truncated": false,
+  "gaps": [
+    {
+      "module": "all",
+      "type": "tests",
+      "description": "No test files exist in the entire project"
+    },
+    {
+      "module": "app/api/admin",
+      "type": "documentation",
+      "description": "Admin API routes (30+ endpoints) lack dedicated CLAUDE.md"
+    },
+    {
+      "module": "app/api/projects",
+      "type": "documentation",
+      "description": "Projects API routes lack dedicated CLAUDE.md"
+    },
+    {
+      "module": "app/api/assets",
+      "type": "documentation",
+      "description": "Assets API routes lack dedicated CLAUDE.md"
+    },
+    {
+      "module": "components/providers",
+      "type": "documentation",
+      "description": "Small module, no dedicated CLAUDE.md (3 files)"
+    }
+  ],
+  "nextSteps": [
+    "Add CLAUDE.md for app/api/admin/ (30+ API endpoints)",
+    "Add CLAUDE.md for app/api/projects/ and app/api/assets/",
+    "Add test infrastructure (Jest + React Testing Library)",
+    "Consider adding Storybook for UI component documentation"
+  ]
+}

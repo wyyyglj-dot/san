@@ -1,0 +1,19 @@
+Create a character mood board / emotion reference sheet displaying:
+
+Emotional Range:
+- Joy / Excitement / Laughter
+- Sadness / Melancholy / Tears
+- Anger / Frustration / Rage
+- Fear / Anxiety / Shock
+- Love / Tenderness / Affection
+- Determination / Confidence / Pride
+- Confusion / Curiosity / Wonder
+- Exhaustion / Pain / Defeat
+
+Requirements:
+- Consistent character design across all emotions
+- Clear facial expression differentiation
+- Body language supporting each emotion
+- Subtle micro-expression details
+- Professional character design reference quality
+- Grid layout with emotion labels
