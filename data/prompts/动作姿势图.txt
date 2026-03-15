@@ -1,0 +1,13 @@
+Create a character action pose reference sheet showing dynamic poses:
+- Running/Sprinting
+- Jumping/Leaping
+- Fighting stance
+- Sitting/Resting
+- Reaching/Grabbing
+- Falling/Tumbling
+
+Requirements:
+- Dynamic and expressive poses
+- Show motion and energy
+- Consistent character design
+- Clean background for easy reference

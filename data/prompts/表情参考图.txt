@@ -1,0 +1,15 @@
+Create a character expression sheet showing various facial expressions:
+- Neutral/Default
+- Happy/Smiling
+- Sad/Melancholy
+- Angry/Frustrated
+- Surprised/Shocked
+- Confused/Puzzled
+- Embarrassed/Blushing
+- Determined/Confident
+
+Requirements:
+- Head and shoulders framing for each expression
+- Consistent art style across all expressions
+- Clear emotional distinction between each
+- Grid layout with labels

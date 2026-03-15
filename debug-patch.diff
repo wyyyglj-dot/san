@@ -1,0 +1,173 @@
+--- components/admin/debug-log-viewer.tsx
++++ components/admin/debug-log-viewer.tsx
+@@ -2,3 +2,3 @@
+ import { useState, useRef, useEffect, useCallback } from 'react';
+-import { X, Search, Trash2, Download, ChevronRight, ChevronDown, Move, GripHorizontal, Activity } from 'lucide-react';
++import { X, Search, Trash2, Download, Move, GripHorizontal, Activity } from 'lucide-react';
+ import { useDebug } from '@/components/providers/debug-provider';
+@@ -16,3 +16,2 @@
+   const [showPolling, setShowPolling] = useState(false);
+-  const [expandedId, setExpandedId] = useState<string | null>(null);
+ 
+@@ -194,5 +193,5 @@
+           {filteredLogs.map(log => (
+-            <div key={log.id} className={cn(
+-              "border border-border/40 rounded bg-card/50 overflow-hidden",
+-              log.source === 'server' && "border-l-4 border-l-purple-500/50"
++            <div key={log.id} className={cn(
++              "border-b border-border/40 last:border-0 bg-card/50",
++              log.source === 'server' && "bg-purple-500/5"
+             )}>
+-              <button
+-                onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
++              <div
+                 className={cn(
+-                  'flex items-center gap-3 w-full text-left p-2 cursor-pointer hover:bg-white/5 transition-colors select-none focus:outline-none focus:bg-white/5',
++                  'flex items-center gap-2 w-full text-left px-2 py-1 font-mono text-xs select-text',
+                   log.type === 'error' && 'text-red-400 bg-red-500/5',
+@@ -201,32 +200,21 @@
+               >
+-                <span className="text-muted-foreground w-16 shrink-0">
+-                  {new Date(log.timestamp).toLocaleTimeString().split(' ')[0]}
++                <span className="text-muted-foreground shrink-0 w-[60px]">
++                  [{new Date(log.timestamp).toLocaleTimeString().split(' ')[0]}]
+                 </span>
+ 
+-                <span className={cn(
+-                  'px-1.5 py-0.5 rounded text-[10px] font-bold uppercase w-16 text-center shrink-0',
+-                  log.type === 'request' && 'bg-blue-500/20 text-blue-400',
+-                  log.type === 'response' && 'bg-green-500/20 text-green-400',
+-                  log.type === 'error' && 'bg-red-500/20 text-red-400',
+-                  log.type === 'navigation' && 'bg-purple-500/20 text-purple-400'
+-                )}>
+-                  {log.type}
+-                </span>
+-
+-                <div className="flex-1 truncate flex items-center gap-2">
+-                  {log.method && <span className="font-bold">{log.method}</span>}
+-                  <span className="opacity-80" title={log.url || log.message}>
++                <div className="flex-1 flex items-center gap-2 break-all">
++                  {log.method && <span className={cn("font-bold", log.method === 'GET' ? 'text-blue-400' : 'text-green-400')}>{log.method}</span>}
++                  <span className="opacity-90" title={log.url || log.message}>
+                     {log.url || log.message}
+                   </span>
+                 </div>
+ 
+                 {log.status && (
+-                  <span className={cn(
+-                    'font-bold',
+-                    log.status >= 400 ? 'text-red-400' : 'text-green-400'
+-                  )}>
++                  <span className={cn('font-bold ml-2', log.status >= 400 ? 'text-red-400' : 'text-green-400')}>
+                     {log.status}
+                   </span>
+                 )}
+ 
+-                {log.duration !== undefined && (
+-                  <span className="text-muted-foreground text-[10px]">
++                {log.duration !== undefined && log.duration > 0 && (
++                  <span className="text-muted-foreground ml-2">
+                     {log.duration}ms
+                   </span>
+                 )}
+-
+-                {expandedId === log.id ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+-              </button>
+-
+-              {expandedId === log.id && (() => {
++              </div>
++
++              {(() => {
+                 // 尝试从响应体中提取 _debug 信息
+-                let debugInfo: { apiUrl?: string; model?: string } | null = null;
++                let debugInfo: {
++                  apiUrl?: string;
++                  model?: string;
++                  channelType?: string;
++                  channelId?: string;
++                } | null = null;
++
+                 if (log.body && log.type === 'response') {
+@@ -241,12 +229,12 @@
+                 return (
+-                <div className="p-4 border-t border-border/40 bg-black/20 text-muted-foreground space-y-3">
++                <div className="pl-[76px] pr-2 pb-2 text-muted-foreground/80 space-y-1 text-[11px] font-mono">
+                   {debugInfo && (
+-                    <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-3 space-y-2">
+-                      <div className="text-[10px] uppercase font-bold tracking-wider text-cyan-400">外部 API 调用</div>
++                    <div className="bg-cyan-500/5 border border-cyan-500/20 rounded p-2 mb-2 space-y-1">
++                      <div className="text-[10px] font-bold text-cyan-500/80 mb-1">API DEBUG INFO</div>
+                       {debugInfo.apiUrl && (
+                         <div>
+-                          <span className="text-[10px] opacity-50 mr-2">地址:</span>
+-                          <span className="text-cyan-300 break-all">{debugInfo.apiUrl}</span>
++                          <span className="opacity-50 mr-2">Endpoint:</span>
++                          <span className="text-cyan-400 break-all">{debugInfo.apiUrl}</span>
+                         </div>
+                       )}
+                       {debugInfo.model && (
+                         <div>
+-                          <span className="text-[10px] opacity-50 mr-2">模型:</span>
+-                          <span className="text-cyan-300">{debugInfo.model}</span>
++                          <span className="opacity-50 mr-2">Model:</span>
++                          <span className="text-cyan-400">{debugInfo.model}</span>
+                         </div>
+                       )}
++                      {debugInfo.channelType && (
++                        <div>
++                          <span className="opacity-50 mr-2">Channel Type:</span>
++                          <span className="text-cyan-400">{debugInfo.channelType}</span>
++                        </div>
++                      )}
++                      {debugInfo.channelId && (
++                        <div>
++                          <span className="opacity-50 mr-2">Channel ID:</span>
++                          <span className="text-cyan-400">{debugInfo.channelId}</span>
++                        </div>
++                      )}
+                     </div>
+                   )}
+                   {log.message && (
+                     <div>
+-                      <div className="text-[10px] uppercase font-bold tracking-wider mb-1 opacity-50">消息</div>
+-                      <pre className="whitespace-pre-wrap break-all text-red-400">{log.message}</pre>
++                      <span className="opacity-50 mr-2 select-none">MSG:</span>
++                      <span className="text-red-400 break-all">{log.message}</span>
+                     </div>
+                   )}
+-                  {log.url && (
+-                    <div>
+-                      <div className="text-[10px] uppercase font-bold tracking-wider mb-1 opacity-50">地址</div>
+-                      <pre className="whitespace-pre-wrap break-all text-blue-400">{log.url}</pre>
+-                    </div>
+-                  )}
+-                  {log.status && (
+-                    <div>
+-                      <div className="text-[10px] uppercase font-bold tracking-wider mb-1 opacity-50">状态码</div>
+-                      <span className={cn('font-bold', log.status >= 400 ? 'text-red-400' : 'text-green-400')}>
+-                        {log.status}
+-                      </span>
+-                    </div>
+-                  )}
+-                  {log.duration !== undefined && (
+-                    <div>
+-                      <div className="text-[10px] uppercase font-bold tracking-wider mb-1 opacity-50">耗时</div>
+-                      <span>{log.duration}ms</span>
+-                    </div>
+-                  )}
+                   {log.headers && Object.keys(log.headers).length > 0 && (
+                     <div>
+-                      <div className="text-[10px] uppercase font-bold tracking-wider mb-1 opacity-50">请求头</div>
+-                      <pre className="whitespace-pre-wrap break-all">{JSON.stringify(log.headers, null, 2)}</pre>
++                      <div className="opacity-50 mb-0.5 select-none">HEADERS:</div>
++                      <pre className="whitespace-pre-wrap break-all text-muted-foreground/60 pl-2 border-l border-white/10">{JSON.stringify(log.headers, null, 2)}</pre>
+                     </div>
+                   )}
+                   {log.body && (
+                     <div>
+-                      <div className="text-[10px] uppercase font-bold tracking-wider mb-1 opacity-50">响应体</div>
+-                      <pre className="whitespace-pre-wrap break-all text-primary/80">
++                      <div className="opacity-50 mb-0.5 select-none">BODY:</div>
++                      <pre className="whitespace-pre-wrap break-all text-primary/80 pl-2 border-l border-white/10">
+                         {(() => {
+                           try {

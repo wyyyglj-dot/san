@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  sanhub:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # network_mode: "host"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sanhub
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-}
+
+      # Admin account (required, configured via .env)
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+
+      - DB_TYPE=${DB_TYPE:-sqlite}
+      # MySQL Configuration (if DB_TYPE=mysql)
+      # Use host IP (e.g. 172.17.0.1) or host.docker.internal, not localhost
+      - MYSQL_HOST=${MYSQL_HOST:-host.docker.internal}
+      - MYSQL_PORT=${MYSQL_PORT:-3306}
+      - MYSQL_USER=${MYSQL_USER:-sanhub}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-sanhub}
+      - MYSQL_POOL_SIZE=${MYSQL_POOL_SIZE:-20}
+
+      # Redis (rate limiting)
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-}@redis:6379
+      - TRUST_PROXY=${TRUST_PROXY:-false}
+    volumes:
+      - sanhub_data:/app/data
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    container_name: sanhub-redis
+    restart: unless-stopped
+    command: >
+      sh -c '
+        if [ -n "$REDIS_PASSWORD" ]; then
+          redis-server --maxmemory 64mb --maxmemory-policy allkeys-lru --requirepass "$REDIS_PASSWORD"
+        else
+          redis-server --maxmemory 64mb --maxmemory-policy allkeys-lru
+        fi
+      '
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    volumes:
+      - redis_data:/data
+
+volumes:
+  sanhub_data:
+  redis_data:

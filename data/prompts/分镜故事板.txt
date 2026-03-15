@@ -1,0 +1,19 @@
+Create a professional storyboard panel sequence showing:
+
+Panel Layout:
+- Clear sequential narrative flow
+- Consistent character designs across panels
+- Camera angle and movement indicators
+
+Each Panel Should Include:
+- Shot type notation (WS/MS/CU/ECU)
+- Character blocking and positioning
+- Key action or emotion captured
+- Directional arrows for movement
+
+Style:
+- Clean line art with grayscale shading
+- Professional animation/film storyboard aesthetic
+- Clear silhouettes and readable compositions
+
+Maintain visual continuity and 180-degree rule compliance throughout the sequence.

@@ -1,0 +1,16 @@
+Please create an illustrated character sheet with the following composition:
+
+Three-view orthographic poses:
+- Front view: Full body, standing straight in T-pose
+- Side view: Full body profile, standing straight in T-pose  
+- Back view: Full body rear, standing straight in T-pose
+
+Close-up section:
+- Face close-up portrait
+
+Requirements:
+- Label each view clearly (Front, Side, Back, Close-up)
+- Aspect ratio 3:2
+- Clean white or neutral background
+- Consistent lighting across all views
+- Professional character design reference style
